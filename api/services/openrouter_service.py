@@ -1,6 +1,7 @@
+import logging
 import httpx
 from fastapi import HTTPException
-from config import settings
+from ..config import settings
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
@@ -8,6 +9,8 @@ async def generate_ai_response(prompt: str) -> str:
     if not settings.OPENROUTER_API_KEY or not settings.OPENROUTER_MODEL:
         raise HTTPException(status_code=500, detail="OpenRouter API key or model not configured.")
 
+
+    logging.info(f"Using OpenRouter Model: {settings.OPENROUTER_MODEL}")
     headers = {
         "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
         "Content-Type": "application/json"

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-from services.openrouter_service import generate_ai_response
-from models.order_models import OrderIn # This is a placeholder import for now
+from ..services.openrouter_service import generate_ai_response
+from ..models.order_models import OrderIn # This is a placeholder import for now
 
 router = APIRouter()
 

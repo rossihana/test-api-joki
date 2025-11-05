@@ -32,7 +32,7 @@ const App: React.FC = () => {
 
         <main className="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 md:p-8 border border-gray-700">
           <Routes>
-            <Route path="/" element={<PromptForm onProcessTask={handleProcessTask} isLoading={isLoading} />} />
+            <Route path="/" element={<PromptForm onProcessTask={handleProcessTask} isLoading={isLoading} setIsLoading={setIsLoading} />} />
             <Route path="/data" element={<UserInfoForm />} />
             <Route path="/review" element={<OrderReview />} />
             <Route path="/payment/:transactionId" element={<PaymentStatus />} />

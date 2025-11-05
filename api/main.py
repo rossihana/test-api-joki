@@ -1,6 +1,10 @@
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import ai
+from .routers import ai
 
 app = FastAPI()
 
@@ -17,4 +21,4 @@ app.include_router(ai.router, prefix="/api/ai", tags=["AI"])
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to Joki AI Backend!"}
-
+

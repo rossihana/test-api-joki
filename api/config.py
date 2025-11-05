@@ -1,3 +1,4 @@
+import logging
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 import os
@@ -17,4 +18,5 @@ class Settings(BaseSettings):
         env_file = ".env"
 
 settings = Settings()
+logging.info(f"Loaded OPENROUTER_MODEL from config: {settings.OPENROUTER_MODEL}")
 

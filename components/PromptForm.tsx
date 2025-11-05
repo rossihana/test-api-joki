@@ -1,22 +1,35 @@
 
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface PromptFormProps {
   onProcessTask: (prompt: string, aiResponse: string) => void; // Modified to accept aiResponse
   isLoading: boolean;
+  setIsLoading: (loading: boolean) => void; // Add setIsLoading to props
 }
 
-const PromptForm: React.FC<PromptFormProps> = ({ onProcessTask, isLoading }) => {
+const PromptForm: React.FC<PromptFormProps> = ({ onProcessTask, isLoading, setIsLoading }) => {
   const [prompt, setPrompt] = useState<string>('');
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isLoading) {
+      setElapsedTime(0); // Reset timer when loading starts
+      timer = setInterval(() => {
+        setElapsedTime((prevTime) => prevTime + 1);
+      }, 1000);
+    } else {
+      setElapsedTime(0); // Reset timer when loading stops
+    }
+    return () => clearInterval(timer);
+  }, [isLoading]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (prompt.trim()) {
-      // console.log('Prompt divalidasi:', prompt);
-      // navigate('/data'); // Remove this line
-
+      setIsLoading(true); // Set loading to true when task processing starts
       try {
         // Assuming your backend is running on http://localhost:8000
         const response = await fetch('http://localhost:8000/api/ai/generate', {
@@ -37,6 +50,8 @@ const PromptForm: React.FC<PromptFormProps> = ({ onProcessTask, isLoading }) => 
       } catch (error: any) {
         alert(`Error processing task: ${error.message}`);
         console.error('Error processing task:', error);
+      } finally {
+        setIsLoading(false); // Set loading to false when task processing ends
       }
 
     } else {
@@ -62,8 +77,17 @@ const PromptForm: React.FC<PromptFormProps> = ({ onProcessTask, isLoading }) => 
         className="w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 disabled:bg-purple-900 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg shadow-purple-600/20 focus:outline-none focus:ring-4 focus:ring-purple-500/50"
         disabled={isLoading}
       >
-        <i className="fas fa-bolt mr-2"></i>
-        Proses Tugas
+        {isLoading ? (
+          <>
+            <i className="fas fa-spinner fa-spin mr-2"></i>
+            Memproses... ({elapsedTime}s)
+          </>
+        ) : (
+          <>
+            <i className="fas fa-bolt mr-2"></i>
+            Proses Tugas
+          </>
+        )}
       </button>
     </form>
   );
